@@ -4,60 +4,91 @@ package ru.netology.web.test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.netology.web.data.DataHelper;
-import ru.netology.web.page.DashboardPage;
 import ru.netology.web.page.LoginPage;
 
-import static com.codeborne.selenide.Selenide.*;
-import static ru.netology.web.data.DataHelper.getCard1;
-import static ru.netology.web.data.DataHelper.getCard2;
+import static com.codeborne.selenide.Selenide.open;
 
 
 public class MoneyTransferTest {
 
     @Test
-    void shouldTransferMoneyBetweenOwnCards() {
+    void shouldTransferMoneyFromCard2ToCard1() {
         open("http://localhost:9999");
+
+        int amount = 200;
+        String cardNumber = "5559 0000 0000 0002";
 
         var loginPage = new LoginPage();
         var authInfo = DataHelper.getAuthInfo();
         var verificationPage = loginPage.validLogin(authInfo);
         var verificationCode = DataHelper.getVerificationCodeFor(authInfo);
         var dashboardPage = verificationPage.validVerify(verificationCode);
-        int card1Balance = dashboardPage.getCardBalance(getCard1(authInfo));
-        int card2Balance = dashboardPage.getCardBalance(getCard2(authInfo));
-        int amount = 7000;
-        DashboardPage.moneyTransfer(DataHelper.getCard1(authInfo), DataHelper.getCard2(authInfo), amount);
 
-        var dashboardPageAfterTransfer = new DashboardPage();
-        dashboardPageAfterTransfer.getCardBalance(getCard1(authInfo));
-        dashboardPageAfterTransfer.getCardBalance(getCard2(authInfo));
+        int card1BalanceBeforeTransfer = dashboardPage.getCardBalance(1);
+        int card2BalanceBeforeTransfer = dashboardPage.getCardBalance(2);
 
-        Assertions.assertEquals(card1Balance - amount, dashboardPageAfterTransfer.getCardBalance(getCard1(authInfo)));
-        Assertions.assertEquals(card2Balance + amount, dashboardPageAfterTransfer.getCardBalance(getCard2(authInfo)));
+        var transferPage = dashboardPage.cardTopUp(1);
+        transferPage.cardTopUp(String.valueOf(amount), cardNumber);
+        dashboardPage.updateButton();
 
+        int card1BalanceAfterTransfer = dashboardPage.getCardBalance(1);
+        int card2BalanceAfterTransfer = dashboardPage.getCardBalance(2);
+
+        Assertions.assertEquals(card1BalanceBeforeTransfer + amount, card1BalanceAfterTransfer);
+        Assertions.assertEquals(card2BalanceBeforeTransfer - amount, card2BalanceAfterTransfer);
+    }
+
+    @Test
+    void shouldTransferMoneyFromCard1ToCard2() {
+        open("http://localhost:9999");
+
+        int amount = 200;
+        String cardNumber = "5559 0000 0000 0001";
+
+        var loginPage = new LoginPage();
+        var authInfo = DataHelper.getAuthInfo();
+        var verificationPage = loginPage.validLogin(authInfo);
+        var verificationCode = DataHelper.getVerificationCodeFor(authInfo);
+        var dashboardPage = verificationPage.validVerify(verificationCode);
+
+        int card1BalanceBeforeTransfer = dashboardPage.getCardBalance(1);
+        int card2BalanceBeforeTransfer = dashboardPage.getCardBalance(2);
+
+        var transferPage = dashboardPage.cardTopUp(2);
+        transferPage.cardTopUp(String.valueOf(amount), cardNumber);
+        dashboardPage.updateButton();
+
+        int card1BalanceAfterTransfer = dashboardPage.getCardBalance(1);
+        int card2BalanceAfterTransfer = dashboardPage.getCardBalance(2);
+
+        Assertions.assertEquals(card1BalanceBeforeTransfer - amount, card1BalanceAfterTransfer);
+        Assertions.assertEquals(card2BalanceBeforeTransfer + amount, card2BalanceAfterTransfer);
     }
 
     @Test
     void shouldNotTransferMoneyIfAmountOverBalance() {
         open("http://localhost:9999");
 
+        int amount = 20000;
+        String cardNumber = "5559 0000 0000 0002";
+
         var loginPage = new LoginPage();
         var authInfo = DataHelper.getAuthInfo();
         var verificationPage = loginPage.validLogin(authInfo);
         var verificationCode = DataHelper.getVerificationCodeFor(authInfo);
         var dashboardPage = verificationPage.validVerify(verificationCode);
-        int card1Balance = dashboardPage.getCardBalance(getCard1(authInfo));
-        int card2Balance = dashboardPage.getCardBalance(getCard2(authInfo));
-        int amount = 20000;
-        DashboardPage.moneyTransfer(DataHelper.getCard1(authInfo), DataHelper.getCard2(authInfo), amount);
+        int card1BalanceBeforeTransfer = dashboardPage.getCardBalance(1);
+        int card2BalanceBeforeTransfer = dashboardPage.getCardBalance(2);
 
-        var dashboardPageAfterTransfer = new DashboardPage();
-        dashboardPageAfterTransfer.getCardBalance(getCard1(authInfo));
-        dashboardPageAfterTransfer.getCardBalance(getCard2(authInfo));
+        var transferPage = dashboardPage.cardTopUp(1);
+        transferPage.cardTopUp(String.valueOf(amount), cardNumber);
+        dashboardPage.updateButton();
 
-        Assertions.assertEquals(card1Balance - amount, dashboardPageAfterTransfer.getCardBalance(getCard1(authInfo)));
-        Assertions.assertEquals(card2Balance + amount, dashboardPageAfterTransfer.getCardBalance(getCard2(authInfo)));
+        int card1BalanceAfterTransfer = dashboardPage.getCardBalance(1);
+        int card2BalanceAfterTransfer = dashboardPage.getCardBalance(2);
 
+        Assertions.assertEquals(card1BalanceBeforeTransfer + amount, card1BalanceAfterTransfer);
+        Assertions.assertEquals(card2BalanceBeforeTransfer - amount, card2BalanceAfterTransfer);
     }
 }
 
