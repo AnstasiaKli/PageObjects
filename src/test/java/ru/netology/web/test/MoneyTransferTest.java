@@ -28,7 +28,7 @@ public class MoneyTransferTest {
         int card2BalanceBeforeTransfer = dashboardPage.getCardBalance(2);
 
         var transferPage = dashboardPage.cardTopUp(1);
-        transferPage.cardTopUp(String.valueOf(amount), cardNumber);
+        transferPage.cardTopUp(String.valueOf(amount), DataHelper.Card2().getCardNumber());
         dashboardPage.updateButton();
 
         int card1BalanceAfterTransfer = dashboardPage.getCardBalance(1);
@@ -43,7 +43,6 @@ public class MoneyTransferTest {
         open("http://localhost:9999");
 
         int amount = 200;
-        String cardNumber = "5559 0000 0000 0001";
 
         var loginPage = new LoginPage();
         var authInfo = DataHelper.getAuthInfo();
@@ -55,7 +54,7 @@ public class MoneyTransferTest {
         int card2BalanceBeforeTransfer = dashboardPage.getCardBalance(2);
 
         var transferPage = dashboardPage.cardTopUp(2);
-        transferPage.cardTopUp(String.valueOf(amount), cardNumber);
+        transferPage.cardTopUp(String.valueOf(amount), DataHelper.Card1().getCardNumber());
         dashboardPage.updateButton();
 
         int card1BalanceAfterTransfer = dashboardPage.getCardBalance(1);
@@ -70,7 +69,6 @@ public class MoneyTransferTest {
         open("http://localhost:9999");
 
         int amount = 20000;
-        String cardNumber = "5559 0000 0000 0002";
 
         var loginPage = new LoginPage();
         var authInfo = DataHelper.getAuthInfo();
@@ -81,7 +79,7 @@ public class MoneyTransferTest {
         int card2BalanceBeforeTransfer = dashboardPage.getCardBalance(2);
 
         var transferPage = dashboardPage.cardTopUp(1);
-        transferPage.cardTopUp(String.valueOf(amount), cardNumber);
+        transferPage.cardTopUp(String.valueOf(amount), DataHelper.Card2().getCardNumber());
         dashboardPage.updateButton();
 
         int card1BalanceAfterTransfer = dashboardPage.getCardBalance(1);
