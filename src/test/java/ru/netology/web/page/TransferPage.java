@@ -23,4 +23,13 @@ public class TransferPage {
         transferButton.click();
         return new DashboardPage();
     }
+
+    public TransferPage incorrectAmount(String amount, String transferCard) {
+        amountField.setValue(amount);
+        transferCardNumber.setValue(transferCard);
+        transferButton.click();
+        errorNotification.shouldBe(visible);
+        return this;
+    }
 }
+

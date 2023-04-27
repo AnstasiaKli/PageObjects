@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import ru.netology.web.data.DataHelper;
 import ru.netology.web.page.LoginPage;
 
+import static com.codeborne.selenide.Condition.appear;
+import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
 
 
@@ -28,7 +30,7 @@ public class MoneyTransferTest {
         int card2BalanceBeforeTransfer = dashboardPage.getCardBalance(2);
 
         var transferPage = dashboardPage.cardTopUp(1);
-        transferPage.cardTopUp(String.valueOf(amount), cardNumber);
+        transferPage.cardTopUp(String.valueOf(amount), DataHelper.Card2().getCardNumber());
         dashboardPage.updateButton();
 
         int card1BalanceAfterTransfer = dashboardPage.getCardBalance(1);
@@ -43,7 +45,6 @@ public class MoneyTransferTest {
         open("http://localhost:9999");
 
         int amount = 200;
-        String cardNumber = "5559 0000 0000 0001";
 
         var loginPage = new LoginPage();
         var authInfo = DataHelper.getAuthInfo();
@@ -55,7 +56,7 @@ public class MoneyTransferTest {
         int card2BalanceBeforeTransfer = dashboardPage.getCardBalance(2);
 
         var transferPage = dashboardPage.cardTopUp(2);
-        transferPage.cardTopUp(String.valueOf(amount), cardNumber);
+        transferPage.cardTopUp(String.valueOf(amount), DataHelper.Card1().getCardNumber());
         dashboardPage.updateButton();
 
         int card1BalanceAfterTransfer = dashboardPage.getCardBalance(1);
@@ -70,25 +71,14 @@ public class MoneyTransferTest {
         open("http://localhost:9999");
 
         int amount = 20000;
-        String cardNumber = "5559 0000 0000 0002";
 
         var loginPage = new LoginPage();
         var authInfo = DataHelper.getAuthInfo();
         var verificationPage = loginPage.validLogin(authInfo);
         var verificationCode = DataHelper.getVerificationCodeFor(authInfo);
         var dashboardPage = verificationPage.validVerify(verificationCode);
-        int card1BalanceBeforeTransfer = dashboardPage.getCardBalance(1);
-        int card2BalanceBeforeTransfer = dashboardPage.getCardBalance(2);
-
         var transferPage = dashboardPage.cardTopUp(1);
-        transferPage.cardTopUp(String.valueOf(amount), cardNumber);
-        dashboardPage.updateButton();
-
-        int card1BalanceAfterTransfer = dashboardPage.getCardBalance(1);
-        int card2BalanceAfterTransfer = dashboardPage.getCardBalance(2);
-
-        Assertions.assertEquals(card1BalanceBeforeTransfer + amount, card1BalanceAfterTransfer);
-        Assertions.assertEquals(card2BalanceBeforeTransfer - amount, card2BalanceAfterTransfer);
+        transferPage.incorrectAmount(String.valueOf(amount), DataHelper.Card2().getCardNumber());
+        $("[data-test-id=error-notification]").should(appear);
     }
 }
-
