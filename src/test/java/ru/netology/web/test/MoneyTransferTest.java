@@ -78,7 +78,18 @@ public class MoneyTransferTest {
         var verificationCode = DataHelper.getVerificationCodeFor(authInfo);
         var dashboardPage = verificationPage.validVerify(verificationCode);
         var transferPage = dashboardPage.cardTopUp(1);
+<<<<<<< HEAD
         transferPage.incorrectAmount(String.valueOf(amount), DataHelper.Card2().getCardNumber());
         $("[data-test-id=error-notification]").should(appear);
+=======
+        transferPage.cardTopUp(String.valueOf(amount), DataHelper.Card2().getCardNumber());
+        dashboardPage.updateButton();
+
+        int card1BalanceAfterTransfer = dashboardPage.getCardBalance(1);
+        int card2BalanceAfterTransfer = dashboardPage.getCardBalance(2);
+
+        Assertions.assertEquals(card1BalanceBeforeTransfer + amount, card1BalanceAfterTransfer);
+        Assertions.assertEquals(card2BalanceBeforeTransfer - amount, card2BalanceAfterTransfer);
+>>>>>>> c29010d4c26d551da33acec6be86c88896331a0e
     }
 }

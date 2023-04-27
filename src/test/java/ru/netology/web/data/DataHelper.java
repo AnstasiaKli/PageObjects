@@ -37,4 +37,8 @@ public class DataHelper {
     public static CardInfo Card2() {
         return new CardInfo("5559 0000 0000 0002");
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> c29010d4c26d551da33acec6be86c88896331a0e
