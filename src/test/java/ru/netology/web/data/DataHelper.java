@@ -30,15 +30,12 @@ public class DataHelper {
         private String cardNumber;
     }
 
-    public static CardInfo Card1() {
+    public static CardInfo card1() {
         return new CardInfo("5559 0000 0000 0001");
     }
 
-    public static CardInfo Card2() {
+    public static CardInfo card2() {
         return new CardInfo("5559 0000 0000 0002");
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> c29010d4c26d551da33acec6be86c88896331a0e
+
